@@ -4,7 +4,7 @@ import com.gildedrose.Item
 import com.gildedrose.specs.ItemDebug
 import org.scalacheck._
 
-object AgedBrieTestGen extends Properties("Aged Brie") {
+object AgedBrieTestGen {
 
   val agedBrieGen: Gen[Item] = for {
     name <- Gen.const("Aged Brie")

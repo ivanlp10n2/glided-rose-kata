@@ -1,6 +1,5 @@
 package com.gildedrose
 
-import com.gildedrose.specs.item.NormalItemTestGen.times
 import com.gildedrose.specs.item._
 import com.gildedrose.specs.{ItemDebug, SpecsUtils}
 import org.scalacheck.Gen
@@ -8,7 +7,7 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.scalacheck.{Checkers, ScalaCheckDrivenPropertyChecks}
 
-class GildedRoseTest extends AnyWordSpec with Checkers with ScalaCheckDrivenPropertyChecks with Matchers with SpecsUtils with ItemDebug {
+class GildedRoseTest extends AnyWordSpec with Checkers with ScalaCheckDrivenPropertyChecks with Matchers with SpecsUtils with ItemDebug with TestUtils{
   "A normal item" when {
     "update quality" should {
       "decrement quality by one, once the sell by date has passed, two" in {
@@ -32,11 +31,42 @@ class GildedRoseTest extends AnyWordSpec with Checkers with ScalaCheckDrivenProp
               }
             }
 
-          }
-          }
+          }}
         }
       }
     }
+  }
+
+  "A conjured item" when{
+    "update quality" should {
+      "decrement quality by two, once the sell by date has passed, four" in {
+        forAll(ConjuredItemTestGen.conjuredGen, ConjuredItemTestGen.randomDays) { (item, days) =>
+          val items = Array[Item](item)
+          val app = new GildedRose(items)
+
+          def hasDatePassed: Item => Boolean = _.sellIn <= 0
+
+          1 to days foreach { day => {
+
+            val (prevItem, currItem) = runAction(app)
+
+            debug("Previous", prevItem, day, days)
+            debug("Current", currItem, day, days)
+            currItem.sellIn shouldBe prevItem.sellIn - 1
+            if (prevItem.quality >= 0 && currItem.quality == 0) succeed
+            else {
+              if (hasDatePassed(prevItem)) {
+                currItem.quality shouldBe prevItem.quality - 4
+              } else {
+                currItem.quality shouldBe prevItem.quality - 2
+              }
+            }
+
+          }}
+        }
+      }
+      }
+
   }
 
   " Sulfuras, Hand of Ragnaros item" when {

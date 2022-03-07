@@ -3,15 +3,15 @@ package com.gildedrose.specs.item
 import com.gildedrose.Item
 import org.scalacheck._
 
-object NormalItemTestGen {
-    val itemNameGen: Gen[String] = for {
-      head <- Gen.alphaUpperChar
-      tail <- Gen.alphaStr
-      name = s"$head$tail"
+object ConjuredItemTestGen {
+    val conjuredName: Gen[String] = for {
+      head <- Gen.const("Conjured")
+      tail <- Gen.listOfN(10, Gen.alphaChar).map(_.mkString)
+      name = s"$head $tail"
     } yield name
 
-    val normalGen: Gen[Item] = for {
-      name    <- itemNameGen
+    val conjuredGen: Gen[Item] = for {
+      name    <- conjuredName
       sellIn  <- Gen.choose(-5, 150)
       quality <- Gen.choose(0, 50)
     } yield new Item(name, sellIn, quality)
