@@ -20,47 +20,4 @@ object NormalItemTestGen extends Properties("normal item") with ItemDebug with T
 
     val randomDays: Gen[Int] = Gen.choose(0, 100)
 
-    property("quality of a normal item never goes below zero") = {
-      forAll(normalGen, randomDays) { (item, days) => {
-        val app = new GildedRose(Array[Item](item))
-
-        times(days)(_ => app.updateQuality())
-
-        app.items.head.quality >= 0
-      }}
-    }
-
-    property("once the sell by date has passed, quality degrades twice as fast") = {
-      val randomItem = Gen.choose(-30, 30)
-        .flatMap(sellIn =>
-          normalGen.map(item => {
-            item.sellIn = sellIn
-            item
-          })
-        )
-
-      val degradationBeforePassed = 1
-      val twiceDegradation = degradationBeforePassed * 2
-
-      forAll(randomItem, randomDays) { (item, days) => {
-        val app = new GildedRose(Array[Item](item))
-
-        val runs: Seq[Int] = (1 to days) takeWhile { day =>
-          val (previous, current) = runAction(app)
-
-          if (current.quality == 0 || previous.quality == 0) {
-            true
-          } else{
-            if (previous.sellIn > 0) {
-              current.quality == (previous.quality - degradationBeforePassed)
-          }
-          else {
-            current.quality == (previous.quality - twiceDegradation)
-          }}
-        }
-
-        runs.sizeIs == days
-      }}
-    }
-
 }

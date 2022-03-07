@@ -1,5 +1,6 @@
 package com.gildedrose
 
+import com.gildedrose.specs.item.NormalItemTestGen.times
 import com.gildedrose.specs.item.{AgedBrieTestGen, NormalItemTestGen, RandomItemTestGen, SulfurasTestGen}
 import com.gildedrose.specs.{ItemDebug, SpecsUtils}
 import org.scalatest.matchers.should.Matchers
@@ -34,6 +35,8 @@ class GildedRoseTest extends AnyWordSpec with Checkers with ScalaCheckDrivenProp
           }
         }
       }
+
+
     }
   }
 
@@ -105,12 +108,15 @@ class GildedRoseTest extends AnyWordSpec with Checkers with ScalaCheckDrivenProp
         app.items shouldBe Array.empty[Item]
       }
 
-      "normal item quality should never goes below zero" in {
-        val prefix = "normal item"
-        val property = "quality of a normal item never goes below zero"
+      "any item quality should never goes below zero" in {
+        forAll(RandomItemTestGen.genRandomItem, NormalItemTestGen.randomDays) { (item, days) => {
+          val app = new GildedRose(Array[Item](item))
 
-        val propertyName = s"$prefix.$property"
-        findProperty(NormalItemTestGen)(propertyName).check()
+          times(days)(_ => app.updateQuality())
+
+          app.items.head.quality >= 0
+        }
+        }
       }
 
     }
