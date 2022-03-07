@@ -4,7 +4,7 @@ import com.gildedrose.Item
 import com.gildedrose.item.BackstagePass
 import org.scalacheck.Gen
 
-object BackstagePassesTestGen{
+object BackstagePassTestGen{
   val concertGen: Gen[Item] = for {
     name <- Gen.const(BackstagePass.name)
     sellIn <- Gen.choose(1, 50)

@@ -3,7 +3,7 @@ package com.gildedrose.item.gen
 import com.gildedrose.Item
 import org.scalacheck._
 
-object NormalItemTestGen {
+object NormalTestGen {
     val itemNameGen: Gen[String] = for {
       head <- Gen.alphaUpperChar
       tail <- Gen.alphaStr

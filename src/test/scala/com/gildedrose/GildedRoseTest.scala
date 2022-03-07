@@ -11,7 +11,7 @@ class GildedRoseTest extends AnyWordSpec with Checkers with ScalaCheckDrivenProp
   "A normal item" when {
     "update quality" should {
       "decrement quality by one, once the sell by date has passed, two" in {
-        forAll(NormalItemTestGen.normalGen, NormalItemTestGen.randomDays) { (item, days) =>
+        forAll(NormalTestGen.normalGen, NormalTestGen.randomDays) { (item, days) =>
           val items = Array[Item](item)
           val app = new GildedRose(items)
 
@@ -40,7 +40,7 @@ class GildedRoseTest extends AnyWordSpec with Checkers with ScalaCheckDrivenProp
   "A conjured item" when{
     "update quality" should {
       "decrement quality by two, once the sell by date has passed, four" in {
-        forAll(ConjuredItemTestGen.conjuredGen, ConjuredItemTestGen.randomDays) { (item, days) =>
+        forAll(ConjuredTestGen.conjuredGen, ConjuredTestGen.randomDays) { (item, days) =>
           val items = Array[Item](item)
           val app = new GildedRose(items)
 
@@ -122,7 +122,7 @@ class GildedRoseTest extends AnyWordSpec with Checkers with ScalaCheckDrivenProp
   "A backstage pass item" when {
     "update quality" should {
       "increment quality by 2 when (10 > sellIn > 5) " in {
-        val customGen = BackstagePassesTestGen.concertGen.flatMap(item => {
+        val customGen = BackstagePassTestGen.concertGen.flatMap(item => {
           val lowRange = Gen.choose(5, 10)
           lowRange.map(num => {
             item.sellIn = num
@@ -145,7 +145,7 @@ class GildedRoseTest extends AnyWordSpec with Checkers with ScalaCheckDrivenProp
       }
 
       "increment quality by 3 when (5 > sellIn > 0) " in {
-        val customGen = BackstagePassesTestGen.concertGen.flatMap(item => {
+        val customGen = BackstagePassTestGen.concertGen.flatMap(item => {
           val lowRange = Gen.choose(0, 5)
           lowRange.map(num => {
             item.sellIn = num
@@ -168,7 +168,7 @@ class GildedRoseTest extends AnyWordSpec with Checkers with ScalaCheckDrivenProp
       }
 
       "set quality to 0 when (sellIn <= 0)" in {
-        val customGen = BackstagePassesTestGen.concertGen.flatMap(item => {
+        val customGen = BackstagePassTestGen.concertGen.flatMap(item => {
           val lowRange = Gen.choose(-3, 0)
           lowRange.map(num => {
             item.sellIn = num
@@ -189,7 +189,7 @@ class GildedRoseTest extends AnyWordSpec with Checkers with ScalaCheckDrivenProp
   "Any item" when {
     "update quality" should {
       "returns the item name" in {
-        forAll(RandomItemTestGen.genRandomItem) { item =>
+        forAll(RandomTestGen.genRandomItem) { item =>
           val items = Array[Item](item)
           val app = new GildedRose(items)
           app.updateQuality()
@@ -205,7 +205,7 @@ class GildedRoseTest extends AnyWordSpec with Checkers with ScalaCheckDrivenProp
       }
 
       "an item quality should never goes below zero" in {
-        forAll(RandomItemTestGen.genRandomItem, NormalItemTestGen.randomDays) { (item, days) => {
+        forAll(RandomTestGen.genRandomItem, NormalTestGen.randomDays) { (item, days) => {
           val app = new GildedRose(Array[Item](item))
 
           times(days)(_ => app.updateQuality())
@@ -216,9 +216,9 @@ class GildedRoseTest extends AnyWordSpec with Checkers with ScalaCheckDrivenProp
       }
 
       "an item can never have its Quality increase above 50" in {
-        val itemsThatIncreasesItsQuality = Gen.oneOf(AgedBrieTestGen.agedBrieGen, BackstagePassesTestGen.concertGen)
+        val itemsThatIncreasesItsQuality = Gen.oneOf(AgedBrieTestGen.agedBrieGen, BackstagePassTestGen.concertGen)
 
-        forAll(itemsThatIncreasesItsQuality, NormalItemTestGen.randomDays) { (item, days) =>
+        forAll(itemsThatIncreasesItsQuality, NormalTestGen.randomDays) { (item, days) =>
           val app = new GildedRose(Array[Item](item))
           times(days)(_ => {
             val (previous, current) = runAction(app)
