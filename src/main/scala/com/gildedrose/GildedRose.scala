@@ -1,5 +1,13 @@
 package com.gildedrose
 
+import com.gildedrose.item.AgedBrie.isAgedBrie
+import com.gildedrose.item.BackstagePass
+import com.gildedrose.item.BackstagePass.isBackstage
+import com.gildedrose.item.Sulfuras.isSulfuras
+import com.gildedrose.item.Conjured.isConjured
+import com.gildedrose.item.Normal._
+
+
 class GildedRose(val items: Array[Item]) {
 
 
@@ -7,7 +15,7 @@ class GildedRose(val items: Array[Item]) {
     for (i <- 0 until items.length) {
       val item: Item = items(i)
 
-      if (!isAgedBrie(item) && !isBackstagePasses(item)) {
+      if (!isAgedBrie(item) && !isBackstage(item)) {
         if (isAboveMin(item) && !isSulfuras(item)) {
             item.quality = item.quality - 1
         }
@@ -15,8 +23,8 @@ class GildedRose(val items: Array[Item]) {
         if (isBelowMax(item)) {
           item.quality = item.quality + 1
 
-          if (isBackstagePasses(item)) {
-            updateBackstage(item)
+          if (isBackstage(item)) {
+            BackstagePass.decrement(item)
           }
         }
       }
@@ -27,7 +35,7 @@ class GildedRose(val items: Array[Item]) {
 
       if (hasDatePassed(item)) {
         if (!isAgedBrie(item)) {
-          if (!isBackstagePasses(item)) {
+          if (!BackstagePass.isBackstage(item)) {
             if (isAboveMin(item)) {
               if (!isSulfuras(item)) {
                 item.quality = item.quality - 1
@@ -57,43 +65,4 @@ class GildedRose(val items: Array[Item]) {
     }
   }
 
-  private def hasDatePassed(item: Item) = {
-    item.sellIn < 0
-  }
-
-  private def updateBackstage(item: Item) = {
-    if (item.sellIn < 11) {
-      if (isBelowMax(item)) {
-        item.quality = item.quality + 1
-      }
-    }
-
-    if (item.sellIn < 6) {
-      if (isBelowMax(item)) {
-        item.quality = item.quality + 1
-      }
-    }
-  }
-
-  private def isBelowMax(item: Item) = {
-    item.quality < 50
-  }
-
-  private def isAboveMin(item: Item) = {
-    item.quality > 0
-  }
-
-  private def isSulfuras(i: Item): Boolean = {
-    i.name.equals("Sulfuras, Hand of Ragnaros")
-  }
-
-  private def isBackstagePasses(i: Item): Boolean = {
-    i.name.startsWith("Backstage passes")
-  }
-
-  private def isAgedBrie(i: Item): Boolean = {
-    i.name.startsWith("Aged Brie")
-  }
-
-  private def isConjured(i: Item): Boolean = i.name.startsWith("Conjured")
 }
