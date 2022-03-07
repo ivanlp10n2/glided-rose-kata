@@ -8,7 +8,8 @@ object RandomItemTestGen {
     Gen.oneOf(
       AgedBrieTestGen.agedBrieGen,
       NormalItemTestGen.normalGen,
-      SulfurasTestGen.sulfurasGen
+      SulfurasTestGen.sulfurasGen,
+      ConjuredItemTestGen.conjuredGen
     )
 
 }

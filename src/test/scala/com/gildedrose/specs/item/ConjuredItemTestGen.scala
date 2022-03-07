@@ -1,11 +1,12 @@
 package com.gildedrose.specs.item
 
 import com.gildedrose.Item
+import com.gildedrose.item.Conjured
 import org.scalacheck._
 
 object ConjuredItemTestGen {
     val conjuredName: Gen[String] = for {
-      head <- Gen.const("Conjured")
+      head <- Gen.const(Conjured.name)
       tail <- Gen.listOfN(10, Gen.alphaChar).map(_.mkString)
       name = s"$head $tail"
     } yield name

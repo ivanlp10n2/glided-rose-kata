@@ -35,7 +35,7 @@ class GildedRose(val items: Array[Item]) {
 
       if (hasDatePassed(item)) {
         if (!isAgedBrie(item)) {
-          if (!BackstagePass.isBackstage(item)) {
+          if (!isBackstage(item)) {
             if (isAboveMin(item)) {
               if (!isSulfuras(item)) {
                 item.quality = item.quality - 1
