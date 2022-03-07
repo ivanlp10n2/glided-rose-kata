@@ -5,8 +5,8 @@ class GildedRose(val items: Array[Item]) {
 
   def updateQuality() {
     for (i <- 0 until items.length) {
-
       val item: Item = items(i)
+
       if (!isAgedBrie(item) && !isBackstagePasses(item)) {
         if (isAboveMin(item) && !isSulfuras(item)) {
             item.quality = item.quality - 1
@@ -88,12 +88,12 @@ class GildedRose(val items: Array[Item]) {
   }
 
   private def isBackstagePasses(i: Item): Boolean = {
-    i.name.equals("Backstage passes to a TAFKAL80ETC concert")
+    i.name.startsWith("Backstage passes")
   }
 
   private def isAgedBrie(i: Item): Boolean = {
-    i.name.equals("Aged Brie")
+    i.name.startsWith("Aged Brie")
   }
 
-  private def isConjured(i: Item): Boolean = i.name.contains("Conjured")
+  private def isConjured(i: Item): Boolean = i.name.startsWith("Conjured")
 }
