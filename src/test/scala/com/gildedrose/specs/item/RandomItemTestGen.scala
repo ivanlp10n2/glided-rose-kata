@@ -3,12 +3,12 @@ package com.gildedrose.specs.item
 import com.gildedrose.Item
 import org.scalacheck.Gen
 
-object RandomItem {
+object RandomItemTestGen {
   val genRandomItem: Gen[Item] =
     Gen.oneOf(
-      AgedBrieSpecs.agedBrieGen,
-      NormalItemSpecs.normalGen,
-      SulfurasSpecs.sulfurasGen
+      AgedBrieTestGen.agedBrieGen,
+      NormalItemTestGen.normalGen,
+      SulfurasTestGen.sulfurasGen
     )
 
 }

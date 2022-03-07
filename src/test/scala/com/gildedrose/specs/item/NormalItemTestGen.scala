@@ -5,7 +5,7 @@ import com.gildedrose.{GildedRose, Item, TestUtils}
 import org.scalacheck._
 import org.scalacheck.Prop._
 
-object NormalItemSpecs extends Properties("normal item") with ItemDebug with TestUtils{
+object NormalItemTestGen extends Properties("normal item") with ItemDebug with TestUtils{
     val itemNameGen: Gen[String] = for {
       head <- Gen.alphaUpperChar
       tail <- Gen.alphaStr
@@ -19,7 +19,6 @@ object NormalItemSpecs extends Properties("normal item") with ItemDebug with Tes
     } yield new Item(name, sellIn, quality)
 
     val randomDays: Gen[Int] = Gen.choose(0, 100)
-
 
     property("quality of a normal item never goes below zero") = {
       forAll(normalGen, randomDays) { (item, days) => {

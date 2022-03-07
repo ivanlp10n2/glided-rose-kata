@@ -5,7 +5,7 @@ import com.gildedrose.item.Sulfuras
 import com.gildedrose.specs.ItemDebug
 import org.scalacheck._
 
-object SulfurasSpecs extends Properties("Sulfuras, Hand of Ragnaros") with ItemDebug{
+object SulfurasTestGen extends Properties("Sulfuras, Hand of Ragnaros") {
   val sulfurasGen: Gen[Item] = for {
     name <- Gen.const(Sulfuras.name)
     sellIn <- Gen.choose(0, 200)
