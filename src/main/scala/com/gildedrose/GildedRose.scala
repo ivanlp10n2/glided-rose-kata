@@ -10,7 +10,6 @@ import com.gildedrose.item.Normal._
 
 class GildedRose(val items: Array[Item]) {
 
-
   def updateQuality() {
     for (i <- 0 until items.length) {
       val item: Item = items(i)

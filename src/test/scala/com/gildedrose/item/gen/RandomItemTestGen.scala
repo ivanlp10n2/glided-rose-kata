@@ -1,4 +1,4 @@
-package com.gildedrose.specs.item
+package com.gildedrose.item.gen
 
 import com.gildedrose.Item
 import org.scalacheck.Gen

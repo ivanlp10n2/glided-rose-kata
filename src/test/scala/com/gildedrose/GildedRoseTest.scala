@@ -1,13 +1,13 @@
 package com.gildedrose
 
-import com.gildedrose.specs.item._
-import com.gildedrose.specs.{ItemDebug, SpecsUtils}
+import com.gildedrose.item.ItemHelper
+import com.gildedrose.item.gen._
 import org.scalacheck.Gen
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.scalacheck.{Checkers, ScalaCheckDrivenPropertyChecks}
 
-class GildedRoseTest extends AnyWordSpec with Checkers with ScalaCheckDrivenPropertyChecks with Matchers with SpecsUtils with ItemDebug with TestUtils{
+class GildedRoseTest extends AnyWordSpec with Checkers with ScalaCheckDrivenPropertyChecks with Matchers with ItemHelper {
   "A normal item" when {
     "update quality" should {
       "decrement quality by one, once the sell by date has passed, two" in {
@@ -17,7 +17,7 @@ class GildedRoseTest extends AnyWordSpec with Checkers with ScalaCheckDrivenProp
 
           def hasDatePassed: Item => Boolean = _.sellIn <= 0
 
-          1 to days foreach { day => {
+          times(days){ day => {
 
             val (prevItem, currItem) = runAction(app)
 
@@ -46,7 +46,7 @@ class GildedRoseTest extends AnyWordSpec with Checkers with ScalaCheckDrivenProp
 
           def hasDatePassed: Item => Boolean = _.sellIn <= 0
 
-          1 to days foreach { day => {
+          times(days){ day => {
 
             val (prevItem, currItem) = runAction(app)
 
@@ -75,7 +75,7 @@ class GildedRoseTest extends AnyWordSpec with Checkers with ScalaCheckDrivenProp
         forAll(SulfurasTestGen.sulfurasGen, SulfurasTestGen.randomDay) {
           (sulfuras, randomDay) => {
             val app = new GildedRose(Array[Item](sulfuras))
-            (1 to randomDay).foreach(_ => {
+            times(randomDay)(_ => {
               val (previous, current) = runAction(app)
               previous.quality shouldBe current.quality
             })
@@ -95,7 +95,7 @@ class GildedRoseTest extends AnyWordSpec with Checkers with ScalaCheckDrivenProp
 
             def hasDatePassed: Item => Boolean = _.sellIn <= 0
 
-            1 to days foreach { day => {
+            times(days) { day => {
               val (previous, current) = runAction(app)
 
               current.sellIn shouldBe previous.sellIn - 1
@@ -220,7 +220,7 @@ class GildedRoseTest extends AnyWordSpec with Checkers with ScalaCheckDrivenProp
 
         forAll(itemsThatIncreasesItsQuality, NormalItemTestGen.randomDays) { (item, days) =>
           val app = new GildedRose(Array[Item](item))
-          (1 to days).foreach(_ => {
+          times(days)(_ => {
             val (previous, current) = runAction(app)
 
             previous.quality should be <= 50

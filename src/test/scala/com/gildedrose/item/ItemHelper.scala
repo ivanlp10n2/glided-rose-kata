@@ -1,8 +1,11 @@
-package com.gildedrose.specs
+package com.gildedrose.item
 
 import com.gildedrose.{GildedRose, Item}
 
-trait ItemDebug {
+trait ItemHelper {
+
+  def times[A](n: Int)(f: Int => A): Unit =
+    (1 to n).foreach(f)
 
   def runAction(app: GildedRose): (Item, Item) = {
     val previous = copyHead(app.items)

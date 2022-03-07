@@ -1,8 +1,8 @@
-package com.gildedrose.specs.item
+package com.gildedrose.item.gen
 
 import com.gildedrose.Item
 import com.gildedrose.item.Sulfuras
-import com.gildedrose.specs.ItemDebug
+import com.gildedrose.item.ItemHelper
 import org.scalacheck._
 
 object SulfurasTestGen {
