@@ -4,9 +4,9 @@ import com.gildedrose.Item
 
 object BackstagePass {
   val name = "Backstage passes to a TAFKAL80ETC concert"
-  val isBackstage: Item => Boolean = _.name.startsWith("Backstage passes")
+  def isBackstage: Item => Boolean = _.name.startsWith("Backstage passes")
 
-  def decrement(item: Item): Unit = {
+  def update(item: Item): Unit = {
     if (item.sellIn < 11) {
       if (isBelowMax(item)) {
         item.quality = item.quality + 1

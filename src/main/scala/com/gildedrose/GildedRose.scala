@@ -14,16 +14,16 @@ class GildedRose(val items: Array[Item]) {
     for (i <- 0 until items.length) {
       val item: Item = items(i)
 
-      if (!isAgedBrie(item) && !isBackstage(item)) {
-        if (isAboveMin(item) && !isSulfuras(item)) {
-            item.quality = item.quality - 1
+      if (!isAgedBrie(item) && !isBackstage(item) && !isSulfuras(item)){
+        if (isAboveMin(item) ) {
+          item.quality = item.quality - 1
         }
       } else {
-        if (isBelowMax(item)) {
+         if (isBelowMax(item)){
           item.quality = item.quality + 1
 
           if (isBackstage(item)) {
-            BackstagePass.decrement(item)
+            BackstagePass.update(item)
           }
         }
       }
