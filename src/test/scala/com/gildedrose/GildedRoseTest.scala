@@ -1,8 +1,9 @@
 package com.gildedrose
 
 import com.gildedrose.specs.item.NormalItemTestGen.times
-import com.gildedrose.specs.item.{AgedBrieTestGen, NormalItemTestGen, RandomItemTestGen, SulfurasTestGen}
+import com.gildedrose.specs.item._
 import com.gildedrose.specs.{ItemDebug, SpecsUtils}
+import org.scalacheck.Gen
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.scalacheck.{Checkers, ScalaCheckDrivenPropertyChecks}
@@ -35,12 +36,10 @@ class GildedRoseTest extends AnyWordSpec with Checkers with ScalaCheckDrivenProp
           }
         }
       }
-
-
     }
   }
 
-  "A Sulfuras, Hand of Ragnaros item" when {
+  " Sulfuras, Hand of Ragnaros item" when {
     "update quality" should {
       "never change its quality" in {
         forAll(SulfurasTestGen.sulfurasGen, SulfurasTestGen.randomDay) {
@@ -90,6 +89,73 @@ class GildedRoseTest extends AnyWordSpec with Checkers with ScalaCheckDrivenProp
     }
   }
 
+  "A backstage pass item" when {
+    "update quality" should {
+      "increment quality by 2 when (10 > sellIn > 5) " in {
+        val customGen = BackstagePassesTestGen.concertGen.flatMap(item => {
+          val lowRange = Gen.choose(5, 10)
+          lowRange.map(num => {
+            item.sellIn = num
+            item
+          })
+        })
+
+        forAll(customGen) { item =>
+          whenever(item.sellIn < 10 && item.sellIn > 5) {
+            val app = new GildedRose(Array(item))
+            val (prev, curr) = runAction(app)
+
+            if ((prev.quality == 50) || (prev.quality <= 50 && curr.quality == 50)) {
+              succeed
+            } else {
+              prev.quality + 2 shouldBe curr.quality
+            }
+          }
+        }
+      }
+
+      "increment quality by 3 when (5 > sellIn > 0) " in {
+        val customGen = BackstagePassesTestGen.concertGen.flatMap(item => {
+          val lowRange = Gen.choose(0, 5)
+          lowRange.map(num => {
+            item.sellIn = num
+            item
+          })
+        })
+
+        forAll(customGen) { item =>
+          whenever(item.sellIn < 5 && item.sellIn > 0) {
+            val app = new GildedRose(Array(item))
+            val (prev, curr) = runAction(app)
+
+            if ((prev.quality == 50) || (prev.quality <= 50 && curr.quality == 50)) {
+              succeed
+            } else {
+              prev.quality + 3 shouldBe curr.quality
+            }
+          }
+        }
+      }
+
+      "set quality to 0 when (sellIn <= 0)" in {
+        val customGen = BackstagePassesTestGen.concertGen.flatMap(item => {
+          val lowRange = Gen.choose(-3, 0)
+          lowRange.map(num => {
+            item.sellIn = num
+            item
+          })
+        })
+
+        forAll(customGen) { item =>
+          val app = new GildedRose(Array(item))
+          val (_, curr) = runAction(app)
+
+          curr.quality shouldBe 0
+        }
+      }
+    }
+  }
+
   "Any item" when {
     "update quality" should {
       "returns the item name" in {
@@ -108,7 +174,7 @@ class GildedRoseTest extends AnyWordSpec with Checkers with ScalaCheckDrivenProp
         app.items shouldBe Array.empty[Item]
       }
 
-      "any item quality should never goes below zero" in {
+      "an item quality should never goes below zero" in {
         forAll(RandomItemTestGen.genRandomItem, NormalItemTestGen.randomDays) { (item, days) => {
           val app = new GildedRose(Array[Item](item))
 
@@ -119,6 +185,19 @@ class GildedRoseTest extends AnyWordSpec with Checkers with ScalaCheckDrivenProp
         }
       }
 
+      "an item can never have its Quality increase above 50" in {
+        val itemsThatIncreasesItsQuality = Gen.oneOf(AgedBrieTestGen.agedBrieGen, BackstagePassesTestGen.concertGen)
+
+        forAll(itemsThatIncreasesItsQuality, NormalItemTestGen.randomDays) { (item, days) =>
+          val app = new GildedRose(Array[Item](item))
+          (1 to days).foreach(_ => {
+            val (previous, current) = runAction(app)
+
+            previous.quality should be <= 50
+            current.quality should be <= 50
+          })
+        }
+      }
     }
   }
 
