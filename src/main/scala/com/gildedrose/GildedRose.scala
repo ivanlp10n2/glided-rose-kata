@@ -1,7 +1,7 @@
 package com.gildedrose
 
 import com.gildedrose.item.AgedBrie.isAgedBrie
-import com.gildedrose.item.BackstagePass
+import com.gildedrose.item.{AgedBrie, BackstagePass, Conjured, Sulfuras}
 import com.gildedrose.item.BackstagePass.isBackstage
 import com.gildedrose.item.Sulfuras.isSulfuras
 import com.gildedrose.item.Conjured.isConjured
@@ -14,53 +14,26 @@ class GildedRose(val items: Array[Item]) {
     for (i <- 0 until items.length) {
       val item: Item = items(i)
 
-      if (!isAgedBrie(item) && !isBackstage(item) && !isSulfuras(item)){
-        if (isAboveMin(item) ) {
-          item.quality = item.quality - 1
-        }
-      } else {
-         if (isBelowMax(item)){
-          item.quality = item.quality + 1
-
-          if (isBackstage(item)) {
-            BackstagePass.update(item)
-          }
-        }
-      }
-
-      if (!isSulfuras(item)) {
-        item.sellIn = item.sellIn - 1
-      }
-
-      if (hasDatePassed(item)) {
-        if (!isAgedBrie(item)) {
-          if (!isBackstage(item)) {
-            if (isAboveMin(item)) {
-              if (!isSulfuras(item)) {
-                item.quality = item.quality - 1
-              }
-            }
-          } else {
-            item.quality = item.quality - item.quality
-          }
-        } else {
-          if (isBelowMax(item)) {
-            item.quality = item.quality + 1
-          }
-        }
-      }
-
-      if(isConjured(item)){
-        if(isAboveMin(item)) {
-          if (hasDatePassed(item)) {
-            item.quality = item.quality - 2
-          } else {
+      item match {
+        case i if isAgedBrie(i) => AgedBrie.update(item)
+        case i if isBackstage(i) => BackstagePass.update(item)
+        case i if isSulfuras(i) => Sulfuras.update(item)
+        case i if isConjured(i) => Conjured.update(item)
+        case _ => { // NormalItem
+          if (isAboveMin(item)) {
             item.quality = item.quality - 1
           }
-          if (item.quality < 0)
-            item.quality = 0
+
+          item.sellIn = item.sellIn - 1
+
+          if (hasDatePassed(item)) {
+            if (isAboveMin(item)) {
+              item.quality = item.quality - 1
+            }
+          }
         }
       }
+
     }
   }
 

@@ -3,6 +3,8 @@ package com.gildedrose.item
 import com.gildedrose.Item
 
 object Sulfuras {
+  def update(item: Item): Unit = ()
+
   val name = "Sulfuras, Hand of Ragnaros"
   val constantQuality = 80
 

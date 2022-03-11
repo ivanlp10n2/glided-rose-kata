@@ -65,6 +65,18 @@ class GildedRoseTest extends AnyWordSpec with Checkers with ScalaCheckDrivenProp
       }
     }
 
+    "Conjured item never goes below zero" in {
+      val conjuredItem = ConjuredTestGen.conjuredGen.sample.map(item =>{
+        item.quality = 3
+        item.sellIn = -3
+        item
+      }).get
+
+      val app = new GildedRose(Array(conjuredItem))
+      app.updateQuality()
+      app.items.head.quality shouldBe 0
+    }
+
   }
 
   "A Sulfuras, Hand of Ragnaros item" should {
