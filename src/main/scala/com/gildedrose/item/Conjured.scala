@@ -29,8 +29,8 @@ object Conjured {
   }
 
 
-  val name = "Conjured"
+  val name: String = "Conjured"
 
-  def isConjured: Item => Boolean = _.name.startsWith(name)
+//  def isConjured: Item => Boolean = _.name.startsWith(name)
 
 }

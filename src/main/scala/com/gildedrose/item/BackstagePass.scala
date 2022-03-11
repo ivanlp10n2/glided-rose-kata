@@ -5,7 +5,7 @@ import com.gildedrose.item.Normal.hasDatePassed
 
 object BackstagePass {
   val name = "Backstage passes to a TAFKAL80ETC concert"
-  def isBackstage: Item => Boolean = _.name.startsWith("Backstage passes")
+//  def isBackstage: Item => Boolean = _.name.startsWith("Backstage passes")
 
   def update(item: Item) = {
 

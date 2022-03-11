@@ -5,9 +5,9 @@ import com.gildedrose.Item
 object Sulfuras {
   def update(item: Item): Unit = ()
 
-  val name = "Sulfuras, Hand of Ragnaros"
+  val name: String = "Sulfuras, Hand of Ragnaros"
   val constantQuality = 80
 
-  def isSulfuras: Item => Boolean = _.name == name
+//  def isSulfuras: Item => Boolean = _.name == name
 
 }

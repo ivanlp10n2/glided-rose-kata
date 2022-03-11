@@ -4,9 +4,9 @@ import com.gildedrose.Item
 import com.gildedrose.item.Normal.{hasDatePassed, isBelowMax}
 
 object AgedBrie {
-  val name = "Aged Brie"
+  val name: String = "Aged Brie"
 
-  def isAgedBrie: Item => Boolean = _.name.startsWith("Aged Brie")
+//  def isAgedBrie: Item => Boolean = _.name.startsWith(name)
 
   def update: Item => Unit = item => {
     if (isBelowMax(item)) {
