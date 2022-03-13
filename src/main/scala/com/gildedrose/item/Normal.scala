@@ -16,7 +16,7 @@ object Normal {
     item.quality > 0
   }
 
-  def update:  Item => Unit = item =>{
+  def update: Item => Unit = item =>{
     if (isAboveMin(item)) {
       item.quality = item.quality - 1
     }

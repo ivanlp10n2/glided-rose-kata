@@ -13,14 +13,16 @@ class GildedRose(val items: Array[Item]) {
       Conjured.name -> Conjured.update
     )
 
-    for (i <- 0 until items.length) {
-      val item: Item = items(i)
+    items.foreach( item => {
+      val update = possibleItems
+        .collectFirst { case (name, f) if (item.name startsWith name) => f }
+        .getOrElse(default = Normal.update)
 
-      possibleItems
-      .find { case (name, _) => item.name.startsWith(name) }
-      .fold(ifEmpty = Normal.update)(_._2)
-      .apply(item)
-    }
-  }
+      update(item)
+    })
+   }
 
 }
+//      .find { case (name, _) => item.name.startsWith(name) }
+//      .fold(ifEmpty = Normal.update)(_._2)
+//      .apply(item)
